@@ -10,14 +10,13 @@ from routers.v1.AuthorRouter import AuthorRouter
 from routers.v1.BookRouter import BookRouter
 from schemas.graphql.Query import Query
 from schemas.graphql.Mutation import Mutation
-
+from config import config
 # Application Environment Configuration
-env = get_environment_variables()
 
 # Core Application Instance
 app = FastAPI(
-    title=env.APP_NAME,
-    version=env.API_VERSION,
+    title="test",
+    version="0.0.0",
     openapi_tags=Tags,
 )
 
@@ -29,7 +28,7 @@ app.include_router(BookRouter)
 schema = Schema(query=Query, mutation=Mutation)
 graphql = GraphQLRouter(
     schema,
-    graphiql=env.DEBUG_MODE,
+    graphiql=True,
     context_getter=get_graphql_context,
 )
 

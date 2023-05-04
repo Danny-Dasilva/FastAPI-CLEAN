@@ -1,9 +1,14 @@
-from pydantic import BaseModel
+from datastore import DatastoreEntity
 
 
-class AuthorPostRequestSchema(BaseModel):
-    name: str
 
+class Author(DatastoreEntity):
 
-class AuthorSchema(AuthorPostRequestSchema):
     id: int
+    name: str
+    books: list = []
+
+    class DatastoreConfig(DatastoreEntity.DatastoreConfig):
+        kind = "Author"
+        key_pattern = "{id}"
+

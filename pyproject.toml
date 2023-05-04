@@ -21,12 +21,15 @@ description = ""
 authors = ["Danny-Dasilva <dannydasilva.solutions@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.11"
 fastapi = "^0.95.1"
 pydantic = "^1.10.7"
 strawberry-graphql = "^0.175.0"
 uvicorn = "^0.22.0"
 pymongo = "^4.3.3"
+bson = "^0.5.10"
+pydantic-mongo = "^1.0.1"
+orjson = "^3.8.11"
 
 [tool.poetry.dev-dependencies]
 

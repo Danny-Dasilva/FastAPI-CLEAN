@@ -1,53 +1,36 @@
-from typing import List, Optional
+from typing import Any, List, Union, Optional
 
-from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload
-
-from configs.Database import (
-    get_db_connection,
-)
-from models.BookModel import Book
+from schemas.pydantic.BookSchema import Book
+from datastore.database import DB, Filters, DatabaseKey
 
 
-class BookRepository:
-    db: Session
+class BookRepository(DB):
+    model = Book
 
-    def __init__(
-        self, db: Session = Depends(get_db_connection)
-    ) -> None:
-        self.db = db
+    def __init__(self) -> None:
+        super().__init__(Book)
+
+    def create(self, record: Book) -> Book:  
+        return super().create(record)
+
+    def upsert(  
+        self, record: Book = None, data_to_add: dict = None, **search_args
+    ) -> Book:
+        return super().upsert(record, data_to_add, **search_args)
+
+    def get(
+        self,
+        key: Optional[DatabaseKey] = None,
+        *,
+        filters: List[Union[tuple, str]] = None,
+        **kwargs: Any
+    ) -> Optional[Book]:
+        return super().get(key, filters=filters, **kwargs)
 
     def list(
-        self,
-        name: Optional[str],
-        limit: Optional[int],
-        start: Optional[int],
+        self, keys: List[DatabaseKey] = None, *, filters: Filters = None, **kwargs: Any
     ) -> List[Book]:
-        query = self.db.query(Book)
+        return super().list(keys, filters=filters, **kwargs)
 
-        if name:
-            query = query.filter_by(name=name)
-
-        return query.offset(start).limit(limit).all()
-
-    def get(self, book: Book) -> Book:
-        return self.db.get(
-            Book, book.id, options=[lazyload(Book.authors)]
-        )
-
-    def create(self, book: Book) -> Book:
-        self.db.add(book)
-        self.db.commit()
-        self.db.refresh(book)
-        return book
-
-    def update(self, id: int, book: Book) -> Book:
-        book.id = id
-        self.db.merge(book)
-        self.db.commit()
-        return book
-
-    def delete(self, book: Book) -> None:
-        self.db.delete(book)
-        self.db.commit()
-        self.db.flush()
+    def delete(self, record: Union[Book, DatabaseKey]) -> bool:  
+        return super().delete(record)
