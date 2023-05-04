@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, status
 from schemas.pydantic.AuthorSchema import (
     Author,
 )
-from schemas.pydantic.BookSchema import Book
 from services.AuthorService import AuthorService
 
 AuthorRouter = APIRouter(
@@ -21,16 +20,15 @@ def index(
     authorService: AuthorService = Depends(),
 ):
     return [
-        author.normalize()
-        for author in authorService.list(
-            name, pageSize, startIndex
+        author
+        for author in authorService.list(pageSize=pageSize
         )
     ]
 
 
 @AuthorRouter.get("/{id}", response_model=Author)
 def get(id: int, authorService: AuthorService = Depends()):
-    return authorService.get(id).normalize()
+    return authorService.get(id)
 
 
 @AuthorRouter.post(
@@ -42,7 +40,7 @@ def create(
     author: Author,
     authorService: AuthorService = Depends(),
 ):
-    return authorService.create(author).normalize()
+    return authorService.create(author)
 
 
 @AuthorRouter.patch("/{id}", response_model=Author)
@@ -51,7 +49,7 @@ def update(
     author: Author,
     authorService: AuthorService = Depends(),
 ):
-    return authorService.update(id, author).normalize()
+    return authorService.update(id, author)
 
 
 @AuthorRouter.delete(
@@ -61,15 +59,3 @@ def delete(
     id: int, authorService: AuthorService = Depends()
 ):
     return authorService.delete(id)
-
-
-@AuthorRouter.get(
-    "/{id}/books/", response_model=List[Book]
-)
-def get_books(
-    id: int, authorService: AuthorService = Depends()
-):
-    return [
-        book.normalize()
-        for book in authorService.get_books(id)
-    ]

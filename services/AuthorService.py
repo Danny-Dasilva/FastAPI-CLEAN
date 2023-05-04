@@ -3,7 +3,6 @@ from typing import List, Optional
 from fastapi import Depends
 from repositories.AuthorRepository import AuthorRepository
 from schemas.pydantic.AuthorSchema import Author
-from schemas.pydantic.BookSchema import Book
 
 
 
@@ -13,11 +12,11 @@ class AuthorService:
     def __init__(
         self, authorRepository: AuthorRepository = Depends()
     ) -> None:
-        self.authorRepository = authorRepository
+        self.db = authorRepository
 
     def create(self, author: Author) -> Author:
         return self.db.create(
-            **author
+            author
         )
 
     def delete(self, author_id: int) -> None:
@@ -34,7 +33,7 @@ class AuthorService:
         pageSize: Optional[int] = 100,
         startIndex: Optional[int] = 0,
     ) -> List[Author]:
-        return self.db.list()
+        return self.db.list(limit=pageSize)
 
     def update(
         self, author_id: int, author_body: Author
@@ -42,7 +41,3 @@ class AuthorService:
         return self.db.update(
             author_id, Author(name=author_body.name)
         )
-
-    def get_books(self, author_id: int) -> List[Book]:
-        return self.db.get(id=author_id
-        ).books

@@ -6,7 +6,6 @@ from configs.Environment import get_environment_variables
 from configs.GraphQL import get_graphql_context
 from metadata.Tags import Tags
 from routers.v1.AuthorRouter import AuthorRouter
-from routers.v1.BookRouter import BookRouter
 from schemas.graphql.Query import Query
 from schemas.graphql.Mutation import Mutation
 from config import config
@@ -21,7 +20,6 @@ app = FastAPI(
 
 # Add Routers
 app.include_router(AuthorRouter)
-app.include_router(BookRouter)
 
 # GraphQL Schema and Application Instance
 schema = Schema(query=Query, mutation=Mutation)

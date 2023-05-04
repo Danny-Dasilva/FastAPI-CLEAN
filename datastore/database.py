@@ -223,6 +223,9 @@ class DB(object):
         self,
         keys_only: bool = False,
         filters: Filters = None,
+        cursor=None,
+        limit=100,
+        offset=0,
         **kwargs: Any,
     ) -> Union[List[Type[DatabaseRecord]], List[DatabaseKey]]:
         """List all records from the database.
@@ -237,9 +240,12 @@ class DB(object):
 
         if keys_only:
             query.keys_only()
-            return list(query.fetch())
+            return list(query.fetch(start_cursor=cursor, limit=limit, offset=offset))
         else:
-            entities = list(query.fetch())
+            query = query.fetch(start_cursor=cursor, limit=limit, offset=offset)
+            entities = list(query)
+            next_cursor = query.next_page_token
+            print(next_cursor)
             results = list(self._parse_entities(entities))
             return self.parse_to_model(results)
 
