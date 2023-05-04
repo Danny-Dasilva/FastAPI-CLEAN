@@ -2,7 +2,7 @@ from datastore import DatastoreEntity
 
 
 
-class Author(DatastoreEntity):
+class Book(DatastoreEntity):
 
     id: int
     name: str

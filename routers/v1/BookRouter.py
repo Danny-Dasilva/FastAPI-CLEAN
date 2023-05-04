@@ -2,18 +2,16 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, status
 
-from schemas.pydantic.AuthorSchema import AuthorSchema
+from schemas.pydantic.AuthorSchema import Author
 from schemas.pydantic.BookSchema import (
-    BookAuthorPostRequestSchema,
-    BookPostRequestSchema,
-    BookSchema,
+    Book
 )
 from services.BookService import BookService
 
 BookRouter = APIRouter(prefix="/v1/books", tags=["book"])
 
 
-@BookRouter.get("/", response_model=List[BookSchema])
+@BookRouter.get("/", response_model=List[Book])
 def index(
     name: Optional[str] = None,
     pageSize: Optional[int] = 100,
@@ -28,27 +26,27 @@ def index(
     ]
 
 
-@BookRouter.get("/{id}", response_model=BookSchema)
+@BookRouter.get("/{id}", response_model=Book)
 def get(id: int, bookService: BookService = Depends()):
     return bookService.get(id).normalize()
 
 
 @BookRouter.post(
     "/",
-    response_model=BookSchema,
+    response_model=Book,
     status_code=status.HTTP_201_CREATED,
 )
 def create(
-    book: BookPostRequestSchema,
+    book: Book,
     bookService: BookService = Depends(),
 ):
     return bookService.create(book).normalize()
 
 
-@BookRouter.patch("/{id}", response_model=BookSchema)
+@BookRouter.patch("/{id}", response_model=Book)
 def update(
     id: int,
-    book: BookPostRequestSchema,
+    book: Book,
     bookService: BookService = Depends(),
 ):
     return bookService.update(id, book).normalize()
@@ -62,7 +60,7 @@ def delete(id: int, bookService: BookService = Depends()):
 
 
 @BookRouter.get(
-    "/{id}/authors/", response_model=List[AuthorSchema]
+    "/{id}/authors/", response_model=List[Author]
 )
 def get_authors(
     id: int, bookService: BookService = Depends()
@@ -74,11 +72,11 @@ def get_authors(
 
 
 @BookRouter.post(
-    "/{id}/authors/", response_model=List[AuthorSchema]
+    "/{id}/authors/", response_model=List[Author]
 )
 def add_author(
     id: int,
-    author: BookAuthorPostRequestSchema,
+    author: Book,
     bookService: BookService = Depends(),
 ):
     return [
@@ -89,7 +87,7 @@ def add_author(
 
 @BookRouter.delete(
     "/{id}/authors/{author_id}",
-    response_model=List[AuthorSchema],
+    response_model=List[Author],
 )
 def remove_author(
     id: int,

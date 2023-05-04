@@ -3,10 +3,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, status
 
 from schemas.pydantic.AuthorSchema import (
-    AuthorPostRequestSchema,
-    AuthorSchema,
+    Author,
 )
-from schemas.pydantic.BookSchema import BookSchema
+from schemas.pydantic.BookSchema import Book
 from services.AuthorService import AuthorService
 
 AuthorRouter = APIRouter(
@@ -14,7 +13,7 @@ AuthorRouter = APIRouter(
 )
 
 
-@AuthorRouter.get("/", response_model=List[AuthorSchema])
+@AuthorRouter.get("/", response_model=List[Author])
 def index(
     name: Optional[str] = None,
     pageSize: Optional[int] = 100,
@@ -29,27 +28,27 @@ def index(
     ]
 
 
-@AuthorRouter.get("/{id}", response_model=AuthorSchema)
+@AuthorRouter.get("/{id}", response_model=Author)
 def get(id: int, authorService: AuthorService = Depends()):
     return authorService.get(id).normalize()
 
 
 @AuthorRouter.post(
     "/",
-    response_model=AuthorSchema,
+    response_model=Author,
     status_code=status.HTTP_201_CREATED,
 )
 def create(
-    author: AuthorPostRequestSchema,
+    author: Author,
     authorService: AuthorService = Depends(),
 ):
     return authorService.create(author).normalize()
 
 
-@AuthorRouter.patch("/{id}", response_model=AuthorSchema)
+@AuthorRouter.patch("/{id}", response_model=Author)
 def update(
     id: int,
-    author: AuthorPostRequestSchema,
+    author: Author,
     authorService: AuthorService = Depends(),
 ):
     return authorService.update(id, author).normalize()
@@ -65,7 +64,7 @@ def delete(
 
 
 @AuthorRouter.get(
-    "/{id}/books/", response_model=List[BookSchema]
+    "/{id}/books/", response_model=List[Book]
 )
 def get_books(
     id: int, authorService: AuthorService = Depends()

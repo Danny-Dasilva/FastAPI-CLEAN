@@ -5,7 +5,6 @@ from strawberry.fastapi import GraphQLRouter
 from configs.Environment import get_environment_variables
 from configs.GraphQL import get_graphql_context
 from metadata.Tags import Tags
-from models.BaseModel import init
 from routers.v1.AuthorRouter import AuthorRouter
 from routers.v1.BookRouter import BookRouter
 from schemas.graphql.Query import Query
@@ -39,5 +38,8 @@ app.include_router(
     include_in_schema=False,
 )
 
-# Initialise Data Model Attributes
-init()
+if __name__ == "__main__":
+    # Installed Packages
+    import uvicorn
+
+    uvicorn.run("main:app", reload=True, log_level="debug", use_colors=True)

@@ -7,8 +7,7 @@ from schemas.pydantic.BookSchema import Book
 from repositories.AuthorRepository import AuthorRepository
 from repositories.BookRepository import BookRepository
 from schemas.pydantic.BookSchema import (
-    BookAuthorPostRequestSchema,
-    BookSchema,
+    Book,
 )
 
 
@@ -24,7 +23,7 @@ class BookService:
         self.authorRepository = authorRepository
         self.bookRepository = bookRepository
 
-    def create(self, book_body: BookSchema) -> Book:
+    def create(self, book_body: Book) -> Book:
         return self.bookRepository.create(
             Book(name=book_body.name)
         )
@@ -46,7 +45,7 @@ class BookService:
         )
 
     def update(
-        self, book_id: int, book_body: BookSchema
+        self, book_id: int, book_body: Book
     ) -> Book:
         return self.bookRepository.update(
             book_id, Book(name=book_body.name)
@@ -60,7 +59,7 @@ class BookService:
     def add_author(
         self,
         book_id: int,
-        author_body: BookAuthorPostRequestSchema,
+        author_body: Book,
     ) -> List[Author]:
         author = self.authorRepository.get(
             Author(id=author_body.author_id)
